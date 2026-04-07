@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEP 530: Primitive Types in Patterns</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="sidebar">
+        <h1>☕ JEP 530 Presentation</h1>
+    </div>
+
+    <div id="presentation-area">
+        <div id="progress-bar"></div>
+
+        <div id="slides-container">
+            
+            <div class="slide active cover-slide" data-title="Introduction">
+                <div class="slide-body" style="text-align: center; justify-content: flex-start; align-items: center; width: 100%;">
+                    <div class="intro-header">
+                        <div class="intro-header-brand">
+                            <img src="Logo-NEU.png" alt="NEU Logo">
+                            <img src="Logo_FIT.png" alt="FIT Logo">
+                            <div class="intro-header-text">
+                                <span class="intro-title">National Economics University</span>
+                                <span class="intro-subtitle">Faculty of Information Technology</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h1 style="color: var(--secondary-color); margin-bottom: 40px; font-size: 3.5rem; text-transform: uppercase; letter-spacing: 2px;">
+                        JEP 530<br>
+                        <span style="font-size: 2rem; color: var(--primary-color);">Primitive Types in Pattern Matching</span>
+                    </h1>
+                    <div class="card" style="display: inline-block; text-align: left; min-width: 450px; font-size: 1.3rem; padding: 40px; border-top: 5px solid var(--accent-color);">
+                        <p style="margin-bottom: 10px;"><strong>Full Name:</strong> Chu Gia Bảo</p>
+                        <p style="margin-bottom: 10px;"><strong>Student ID:</strong> 11247386</p>
+                        <p style="margin-bottom: 10px;"><strong>Course Code:</strong> EP17.CNTT1153(225)_01</p>
+                        <p style="margin-bottom: 10px;"><strong>Course:</strong> 66</p>
+                        <p><strong>Lecturer:</strong> Dr. Pham Xuan Lam</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="1. The Problem">
+                <div class="slide-header"><h2>1. The Problem with Primitive Types in Java</h2></div>
+                <div class="slide-body">
+                    <p><strong>What issues does Java have with primitive types?</strong></p>
+                    <ul>
+                        <li>Primitive types in Java include: <code class="keyword" style="color: var(--primary-color);">byte, short, int, long, float, double, char, boolean</code>.</li>
+                        <li>Developers constantly face the risk of <span class="highlight">data loss (loss of information)</span> when performing type casting between primitive types.</li>
+                        <li>For example, converting from <code class="keyword" style="color: var(--primary-color);">int</code> to <code class="keyword" style="color: var(--primary-color);">float</code> may silently lose precision without any warning.</li>
+                        <li>To perform safe casting (e.g., <code class="keyword" style="color: var(--primary-color);">int</code> &rarr; <code class="keyword" style="color: var(--primary-color);">byte</code>), developers must manually write range checks, which are verbose and error-prone.</li>
+                    </ul>
+                    <div class="card error">
+                        <h3>Consequence & Solution</h3>
+                        <p><strong>Consequence:</strong> Code becomes verbose and lacks consistency between primitive types and reference types when using Pattern Matching.</p>
+                        <p style="margin-top: 10px;"><strong>Solution:</strong> That is why JEP 530 was introduced in the OpenJDK ecosystem to standardize and solve this problem.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="2. JEP 530 Definition">
+                <div class="slide-header"><h2>2. JEP 530: Extending Pattern Matching to Primitive Types</h2></div>
+                <div class="slide-body">
+                    <ul>
+                        <li><strong>Definition:</strong> JEP 530 (Primitive Types in Patterns, instanceof, and switch) is a language feature currently in its 4th Preview stage (expected in JDK 26).</li>
+                        <li><strong>Main Goal:</strong> Enhance Pattern Matching by allowing primitive types in all pattern contexts, and extend <code>instanceof</code> and <code>switch</code> to support all primitive types.</li>
+                    </ul>
+                    <div class="card success">
+                        <h3>Core Change</h3>
+                        <p>Align type patterns with <code>instanceof</code> behavior, turning <code>instanceof</code> into a <strong>safe casting guard</strong> for all data types.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="3. Why JEP 530 Matters">
+                <div class="slide-header"><h2>3. Why JEP 530 Matters</h2></div>
+                <div class="slide-body">
+                    <div class="split-3">
+                        <div class="card error">
+                            <h3>1. Limitation of switch</h3>
+                            <p style="font-size: 1rem;">Pattern matching in switch currently supports only reference types and record patterns (e.g., case Integer i), completely ignoring primitive types.</p>
+                            <div class="code-container" style="font-size: 0.90rem;"><span class="keyword">public class</span> <span class="type">Main</span> {
+  <span class="keyword">public static void</span> main(<span class="type">String</span>[] args) {
+    <span class="keyword">int</span> x = <span class="number">10</span>;
+    <span class="keyword">switch</span> (x) {
+      <span class="keyword">case int</span> i -> System.out.println(i);
+      <span class="comment">// Compile error: primitive int 
+      // does not match pattern</span>
+    }
+  }
+}</div>
+                        </div>
+                        <div class="card error">
+                            <h3>2. Limitation of Record</h3>
+                            <p style="font-size: 1rem;">When decomposing a record, primitive patterns are invariant. You must match double and manually cast to int.</p>
+                            <div class="code-container" style="font-size: 0.90rem;"><span class="keyword">record</span> <span class="type">Point</span>(<span class="keyword">double</span> x, <span class="keyword">double</span> y) {}
+
+<span class="type">Point</span> p = <span class="keyword">new</span> <span class="type">Point</span>(<span class="number">3.7</span>, <span class="number">4.2</span>);
+<span class="keyword">if</span> (p <span class="keyword">instanceof</span> <span class="type">Point</span>(<span class="keyword">double</span> x, <span class="keyword">double</span> y)) {
+    <span class="keyword">int</span> xi = (<span class="keyword">int</span>) x; <span class="comment">// must cast manually</span>
+    <span class="keyword">int</span> yi = (<span class="keyword">int</span>) y;
+}</div>
+                        </div>
+                        <div class="card error">
+                            <h3>3. Limitation instanceof</h3>
+                            <p style="font-size: 1rem;">Cannot be used with primitive type patterns. Developers have to do everything manually.</p>
+                            <div class="code-container" style="font-size: 0.90rem;"><span class="keyword">int</span> x = <span class="number">10</span>;
+
+<span class="comment">// Does not exist</span>
+<span class="keyword">if</span> (x <span class="keyword">instanceof int</span> i) {
+    System.out.println(i);
+}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="4. How JEP 530 Works">
+                <div class="slide-header"><h2>4. How JEP 530 Works</h2></div>
+                <div class="slide-body">
+                    <div class="split-2">
+                        <div class="card success">
+                            <h3>1. Extended Pattern Matching</h3>
+                            <p>Primitive type patterns can now be applied to a wider range of match candidates.</p>
+                        </div>
+                        <div class="card success">
+                            <h3>2. Top-level Patterns</h3>
+                            <p>Primitive patterns are supported at the top level in both <code>instanceof</code> and <code>switch</code>.</p>
+                        </div>
+                        <div class="card success">
+                            <h3>3. Enhanced instanceof</h3>
+                            <p><code>instanceof</code> becomes a universal safety guard for all types.</p>
+                        </div>
+                        <div class="card success">
+                            <h3>4. Enhanced switch</h3>
+                            <p><code>switch</code> now supports all primitive types, including <code>long</code>, <code>float</code>, <code>double</code>, and <code>boolean</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="5. Before vs After">
+                <div class="slide-header"><h2>5. Before vs After: Safer Primitive Casting</h2></div>
+                <div class="slide-body">
+                    <p><strong>Problem:</strong> Safely cast from <code class="keyword" style="color: var(--primary-color);">int</code> to <code class="keyword" style="color: var(--primary-color);">byte</code>.</p>
+                    <div class="split-2">
+                        <div class="card error">
+                            <h3>Old Java Style (Before JEP 530)</h3>
+                            <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">int</span> i = <span class="number">200</span>;
+<span class="keyword">if</span> (i >= <span class="operator">-</span><span class="number">128</span> && i <= <span class="number">127</span>) {
+    <span class="keyword">byte</span> b = (<span class="keyword">byte</span>) i;
+    System.out.println(b);
+} <span class="keyword">else</span> {
+    System.out.println(<span class="string">"Out of range"</span>);
+}
+
+<span class="keyword">int</span> i2 = <span class="number">130</span>;
+<span class="keyword">byte</span> b2 = (<span class="keyword">byte</span>) i2;
+System.out.println(b2); <span class="comment">// -126 (Incorrect but no error message)</span></div>
+                        </div>
+                        <div class="card success">
+                            <h3>With JEP 530</h3>
+                            <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">int</span> i = <span class="number">200</span>;
+<span class="keyword">if</span> (i <span class="keyword">instanceof byte</span> b) {
+    System.out.println(b);
+} <span class="keyword">else</span> {
+    System.out.println(<span class="string">"Out of range"</span>);
+}
+
+<span class="keyword">int</span> i2 = <span class="number">130</span>;
+<span class="keyword">if</span> (i2 <span class="keyword">instanceof byte</span> b) {
+    System.out.println(b);
+} <span class="keyword">else</span> {
+    System.out.println(<span class="string">"Conversion unsafe"</span>);
+}</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 10px; font-weight: bold; color: var(--secondary-color);">
+                        Result: JEP 530 automatically handles lossy conversion checks and returns false if data loss occurs, eliminating silent bugs
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide" data-title="6. Nested Records">
+                <div class="slide-header"><h2>6. Advanced Use Case: Nested Record Patterns</h2></div>
+                <div class="slide-body">
+                    <p><strong>Problem:</strong> Parse JSON flexibly while extracting <code class="keyword" style="color: var(--primary-color);">int</code> from <code class="keyword" style="color: var(--primary-color);">double</code>.</p>
+                    <div class="split-2">
+                        <div class="card error">
+                            <h3>Old Java Style</h3>
+                            <div class="code-container" style="font-size: 0.95rem;"><span class="type">Object</span> json = <span class="keyword">new</span> <span class="type">JsonObject</span>(<span class="type">Map</span>.of(
+    <span class="string">"age"</span>, <span class="keyword">new</span> <span class="type">JsonNumber</span>(<span class="number">20.9</span>)
+));
+
+<span class="keyword">if</span> (json <span class="keyword">instanceof</span> <span class="type">JsonObject</span> obj) {
+    <span class="type">Object</span> ageField = obj.map().get(<span class="string">"age"</span>);
+    <span class="keyword">if</span> (ageField <span class="keyword">instanceof</span> <span class="type">JsonNumber</span> num) {
+        <span class="keyword">double</span> a = num.value();
+        <span class="keyword">int</span> age = (<span class="keyword">int</span>) a; <span class="comment">// Manual cast (may result in data loss)</span>
+        System.out.println(age);
+    }
+}</div>
+                        </div>
+                        <div class="card success">
+                            <h3>With JEP 530</h3>
+                            <div class="code-container" style="font-size: 0.95rem;"><span class="type">Object</span> json = <span class="keyword">new</span> <span class="type">JsonObject</span>(<span class="type">Map</span>.of(
+    <span class="string">"age"</span>, <span class="keyword">new</span> <span class="type">JsonNumber</span>(<span class="number">20.9</span>)
+));
+
+<span class="keyword">if</span> (json <span class="keyword">instanceof</span> <span class="type">JsonObject</span>(<span class="keyword">var</span> map) && 
+    map.get(<span class="string">"age"</span>) <span class="keyword">instanceof</span> <span class="type">JsonNumber</span>(<span class="keyword">int</span> age)) {
+       
+    <span class="comment">// Only run if the conversion is safe.</span>
+    System.out.println(age);
+} <span class="keyword">else</span> {
+    System.out.println(<span class="string">"Invalid or unsafe age"</span>);
+}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="7. Under the Hood">
+                <div class="slide-header"><h2>7. Under the Hood: Conversion Rules & Dominance</h2></div>
+                <div class="slide-body">
+                    <ul>
+                        <li><strong>Exact vs. Inexact Conversions:</strong> Safety depends on runtime values.
+                            <ul>
+                                <li><em>Example:</em> Converting <code>1000</code> to <code>byte</code> is <span class="highlight">inexact</span> &rarr; returns false.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Unconditionally Exact:</strong> The compiler knows the conversion is always safe (e.g., <code class="keyword" style="color: var(--primary-color);">int</code> to <code class="keyword" style="color: var(--primary-color);">double</code>), so no runtime check is needed.</li>
+                        <li><strong>Dominance:</strong> In <code>switch</code>, the compiler uses these rules to detect if one case dominates another.
+                            <ul>
+                                <li><em>Example:</em> <code>case long</code> dominates <code>case int i</code>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="slide" data-title="8. Key Benefits">
+                <div class="slide-header"><h2>8. Key Benefits of JEP 530</h2></div>
+                <div class="slide-body">
+                    <div class="split-3">
+                        <div class="card success">
+                            <h3>Cleaner Code</h3>
+                            <p>Eliminates verbose range-checking logic.</p>
+                        </div>
+                        <div class="card success">
+                            <h3>Data Safety</h3>
+                            <p>Prevents silent data loss.</p>
+                        </div>
+                        <div class="card success">
+                            <h3>Consistency</h3>
+                            <p>Unified behavior between primitive and reference types.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="9. Limitations & Trade-offs">
+                <div class="slide-header"><h2>9. Limitations and Trade-offs</h2></div>
+                <div class="slide-body">
+                    <div class="split-2">
+                        <div class="card error">
+                            <h3>Backward Compatibility</h3>
+                            <p>Stricter dominance rules may cause previously valid switch statements to fail compilation.</p>
+                            <div class="code-container" style="font-size: 0.85rem;"><span class="keyword">long</span> x = <span class="number">10</span>;
+<span class="keyword">switch</span> (x) {
+  <span class="keyword">case long</span> l -> System.out.println(<span class="string">"long: "</span> + l);
+  <span class="keyword">case int</span> i -> System.out.println(<span class="string">"int: "</span> + i);
+  <span class="comment">// Error: pattern is dominated by preceding case</span>
+}</div>
+                        </div>
+                        <div class="card error">
+                            <h3>Learning Curve</h3>
+                            <p>Developers must adapt to <code>instanceof</code> and <code>switch</code> working with all primitive types.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="10. Real-World Apps">
+                <div class="slide-header"><h2>10. Real-World Applications</h2></div>
+                <div class="slide-body">
+                    <div class="card">
+                        <h3>Boolean Switches Replace Ternary</h3>
+                        <p>Code logging or fast logic processing can use clear switches (booleans) that can contain statement blocks (unlike the <code>?:</code> operator).</p>
+                    </div>
+                    <div class="card">
+                        <h3>Improved Data Parsing</h3>
+                        <p>Very useful for JSON/XML frameworks where input data is often flexible (like numbers that can be <code>int</code> or <code>double</code>) but domain logic needs precise types.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-title="11. Future Direction">
+                <div class="slide-header"><h2>11. What's Next for Pattern Matching in Java</h2></div>
+                <div class="slide-body">
+                    <ul>
+                        <li><strong>Towards Constant Patterns:</strong> Standardizing the pattern matching system for primitive types paves the way for future support of Constant Patterns.</li>
+                        <li><strong>New possibilities:</strong> In the future, programmers can directly pass constants into Record Patterns like <code>case Box(42) -> ...</code> (which Java does not currently support).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="slide" data-title="12. Conclusion">
+                <div class="slide-header"><h2>12. Conclusion: A Safer and More Consistent Java</h2></div>
+                <div class="slide-body" style="align-items: center; justify-content: center; text-align: center;">
+                    <p style="font-size: 1.5rem; margin-bottom: 20px;">JEP 530 is not just a minor syntax improvement.<br>It is a major step forward in <strong>Project Amber</strong>, helping Java become:</p>
+                    <div class="split-3" style="text-align: left; width: 100%;">
+                        <div class="card">
+                            <h3>Less verbose</h3>
+                            <p>Cleaner, modern syntax.</p>
+                        </div>
+                        <div class="card">
+                            <h3>More developer-friendly</h3>
+                            <p>Compiler handles safety checks.</p>
+                        </div>
+                        <div class="card">
+                            <h3>Safer and more consistent</h3>
+                            <p>Unified pattern matching system.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="controls">
+            <button id="prevBtn">← Previous</button>
+            <span id="slide-counter">1 / 13</span>
+            <button id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
