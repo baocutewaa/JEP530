@@ -23,7 +23,24 @@ body { display: flex; height: 100vh; background-color: var(--bg-color); color: v
 
 /* Sidebar / Table of Contents */
 #sidebar { width: 320px; background: var(--sidebar-bg); color: var(--sidebar-text); padding: 20px 0; display: flex; flex-direction: column; overflow-y: auto; z-index: 20; box-shadow: var(--shadow); }
-#sidebar h1 { font-size: 1.3rem; padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; color: var(--accent-color); }
+#sidebar h1 {
+    font-size: 1.3rem;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 10px;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.2;
+}
+
+#sidebar h1 .sidebar-logo {
+    height: 40px;
+    width: auto;
+    flex-shrink: 0;
+    display: block;
+}
 .toc-item { padding: 14px 20px; cursor: pointer; transition: 0.3s; font-size: 1rem; border-left: 4px solid transparent; }
 .toc-item:hover { background: rgba(255,255,255,0.1); }
 .toc-item.active { background: rgba(255,255,255,0.15); border-left-color: var(--accent-color); font-weight: bold; color: var(--accent-color); }

@@ -11,7 +11,7 @@
 <body>
 
     <div id="sidebar">
-        <h1>☕ JEP 530 Presentation</h1>
+        <h1><img src="java.png" alt="Java Logo" class="sidebar-logo"> JEP 530 Presentation</h1>
     </div>
 
     <div id="presentation-area">
@@ -71,8 +71,8 @@
                         <li><strong>Main Goal:</strong> Enhance Pattern Matching by allowing primitive types in all pattern contexts, and extend <code>instanceof</code> and <code>switch</code> to support all primitive types.</li>
                     </ul>
                     <div class="card success">
-                        <h3>Core Change</h3>
-                        <p>Align type patterns with <code>instanceof</code> behavior, turning <code>instanceof</code> into a <strong>safe casting guard</strong> for all data types.</p>
+                        <h3>Key idea</h3>
+                        <p> Make instanceof becomes a <strong>safe casting guard</strong>, meaning it can check and convert data safely in one step</p>
                     </div>
                 </div>
             </div>
@@ -151,30 +151,30 @@
                     <div class="split-2">
                         <div class="card error">
                             <h3>Old Java Style (Before JEP 530)</h3>
-                            <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">int</span> i = <span class="number">200</span>;
-<span class="keyword">if</span> (i >= <span class="operator">-</span><span class="number">128</span> && i <= <span class="number">127</span>) {
-    <span class="keyword">byte</span> b = (<span class="keyword">byte</span>) i;
-    System.out.println(b);
+                            <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">int</span> a = <span class="number">200</span>;
+<span class="keyword">if</span> (a >= <span class="operator">-</span><span class="number">128</span> && a <= <span class="number">127</span>) {
+    <span class="keyword">byte</span> c = (<span class="keyword">byte</span>) a;
+    System.out.println(c);
 } <span class="keyword">else</span> {
     System.out.println(<span class="string">"Out of range"</span>);
 }
 
-<span class="keyword">int</span> i2 = <span class="number">130</span>;
-<span class="keyword">byte</span> b2 = (<span class="keyword">byte</span>) i2;
-System.out.println(b2); <span class="comment">// -126 (Incorrect but no error message)</span></div>
+<span class="keyword">int</span> b = <span class="number">130</span>;
+<span class="keyword">byte</span> c = (<span class="keyword">byte</span>) b;
+System.out.println(c); <span class="comment">// -126 (Incorrect but no error message)</span></div>
                         </div>
                         <div class="card success">
                             <h3>With JEP 530</h3>
-                            <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">int</span> i = <span class="number">200</span>;
-<span class="keyword">if</span> (i <span class="keyword">instanceof byte</span> b) {
-    System.out.println(b);
+                            <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">int</span> a = <span class="number">200</span>;
+<span class="keyword">if</span> (a <span class="keyword">instanceof byte</span> c) {
+    System.out.println(c);
 } <span class="keyword">else</span> {
     System.out.println(<span class="string">"Out of range"</span>);
 }
 
-<span class="keyword">int</span> i2 = <span class="number">130</span>;
-<span class="keyword">if</span> (i2 <span class="keyword">instanceof byte</span> b) {
-    System.out.println(b);
+<span class="keyword">int</span> b = <span class="number">130</span>;
+<span class="keyword">if</span> (b <span class="keyword">instanceof byte</span> c) {
+    System.out.println(c);
 } <span class="keyword">else</span> {
     System.out.println(<span class="string">"Conversion unsafe"</span>);
 }</div>
@@ -291,7 +291,7 @@ System.out.println(b2); <span class="comment">// -126 (Incorrect but no error me
                 <div class="slide-body">
                     <div class="card">
                         <h3>Boolean Switches Replace Ternary</h3>
-                        <p>Code logging or fast logic processing can use clear switches (booleans) that can contain statement blocks (unlike the <code>?:</code> operator).</p>
+                        <p>Use boolean switch instead of ternary operators for clearer logic</p>
                     </div>
                     <div class="card">
                         <h3>Improved Data Parsing</h3>
@@ -305,7 +305,7 @@ System.out.println(b2); <span class="comment">// -126 (Incorrect but no error me
                 <div class="slide-body">
                     <ul>
                         <li><strong>Towards Constant Patterns:</strong> Standardizing the pattern matching system for primitive types paves the way for future support of Constant Patterns.</li>
-                        <li><strong>New possibilities:</strong> In the future, programmers can directly pass constants into Record Patterns like <code>case Box(42) -> ...</code> (which Java does not currently support).</li>
+                        <li><strong>New possibilities:</strong> In the future, programmers can directly pass constants into Record Patterns like <code>case Box(42) -> ...</code></li>
                     </ul>
                 </div>
             </div>
