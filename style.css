@@ -1,17 +1,17 @@
 :root {
-    /* Chủ đề Xanh Biển */
-    --primary-color: #007bff; /* Xanh biển tươi */
-    --secondary-color: #004085; /* Xanh biển đậm */
-    --accent-color: #00bfff; /* Xanh da trời nhấn nhá */
-    --bg-color: #f0f4f8; /* Nền xanh nhạt dịu mắt */
+    /* Chủ đề */
+    --primary-color: #007bff;
+    --secondary-color: #004085;
+    --accent-color: #00bfff;
+    --bg-color: #f0f4f8;
     --text-color: #2c3e50;
     
-    /* Theme Code (Midnight Blue) */
+    /* Theme Code */
     --code-bg: #011627; 
     --code-text: #d6deeb;
     
     /* Sidebar */
-    --sidebar-bg: #002244; /* Xanh navy cực đậm */
+    --sidebar-bg: #002244;
     --sidebar-text: #ecf0f1;
     
     --shadow: 0 8px 15px rgba(0,0,0,0.1);
@@ -91,7 +91,7 @@ body { display: flex; height: 100vh; background-color: var(--bg-color); color: v
 }
 
 /* Typography Emphases */
-.highlight { color: #d35400; font-weight: bold; } /* Màu cam làm điểm nhấn cảnh báo */
+.highlight { color: #d35400; font-weight: bold; }
 
 /* Code Syntax Highlighting (Night Owl inspired) */
 .keyword { color: #f78c6c; font-weight: 400; }
