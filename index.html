@@ -235,9 +235,10 @@ System.out.println(c); <span class="comment">// -126 (Incorrect but no error mes
                             </ul>
                         </li>
                         <li><strong>Unconditionally Exact:</strong> The compiler knows the conversion is always safe (e.g., <code class="keyword" style="color: var(--primary-color);">int</code> to <code class="keyword" style="color: var(--primary-color);">double</code>), so no runtime check is needed.</li>
-                        <li><strong>Dominance:</strong> In <code>switch</code>, the compiler uses these rules to detect if one case dominates another.
+                        <li><strong>Dominance:</strong> If one case always matches before another, it call dominance
+                            <p>⭢ Helps the compiler detect unreachable code</p>
                             <ul>
-                                <li><em>Example:</em> <code>case long</code> dominates <code>case int i</code>.</li>
+                                <li><em>Example:</em> <code>case long</code> dominates <code>case int i</code></li>
                             </ul>
                         </li>
                     </ul>
@@ -292,6 +293,27 @@ System.out.println(c); <span class="comment">// -126 (Incorrect but no error mes
                     <div class="card">
                         <h3>Boolean Switches Replace Ternary</h3>
                         <p>Use boolean switch instead of ternary operators for clearer logic</p>
+                        <div class="split-2" style="margin-top: 12px;">
+                            <div class="card error">
+                                <h3>Old style</h3>
+                                <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">boolean</span> isPaid = <span class="keyword">true</span>;
+<span class="keyword">boolean</span> isShipped = <span class="keyword">false</span>;
+
+<span class="type">String</span> status = isPaid
+    ? (isShipped ? <span class="string">"Completed"</span> : <span class="string">"Processing"</span>)
+    : <span class="string">"Pending"</span>;</div>
+                            </div>
+                            <div class="card success">
+                                <h3>Modern style</h3>
+                                <div class="code-container" style="font-size: 0.95rem;"><span class="keyword">boolean</span> isPaid = <span class="keyword">true</span>;
+<span class="keyword">boolean</span> isShipped = <span class="keyword">false</span>;
+
+<span class="type">String</span> status = <span class="keyword">switch</span> (isPaid) {
+    <span class="keyword">case false</span> -> <span class="string">"Pending"</span>;
+    <span class="keyword">case true</span> -> isShipped ? <span class="string">"Completed"</span> : <span class="string">"Processing"</span>;
+};</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card">
                         <h3>Improved Data Parsing</h3>
